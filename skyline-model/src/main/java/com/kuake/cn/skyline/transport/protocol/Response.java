@@ -11,11 +11,11 @@ import java.util.Arrays;
  * @author: chenliqiang001
  * @create: 2021-03-24
  **/
-public class Request extends NettyMessage.Body {
+public class Response extends NettyMessage.Body {
     /**
      * 消息类型ID
      **/
-    public static final byte ID = 10;
+    public static final byte ID = 20;
 
     /**
      * 请求主机端口号
@@ -25,11 +25,11 @@ public class Request extends NettyMessage.Body {
     /**
      * 请求入参
      **/
-    private byte [] parameters;
+    private byte [] result;
 
-    public Request(byte[] ipPort, byte[] parameters) {
+    public Response(byte[] ipPort, byte[] result) {
         this.ipPort = ipPort;
-        this.parameters = parameters;
+        this.result = result;
     }
 
     public byte[] getIpPort() {
@@ -40,19 +40,19 @@ public class Request extends NettyMessage.Body {
         this.ipPort = ipPort;
     }
 
-    public byte[] getParameters() {
-        return parameters;
+    public byte[] getResult() {
+        return result;
     }
 
-    public void setParameters(byte[] parameters) {
-        this.parameters = parameters;
+    public void setResult(byte[] result) {
+        this.result = result;
     }
 
     @Override
     public String toString() {
-        return "Request{" +
+        return "Response{" +
                 "ipPort=" + Arrays.toString(ipPort) +
-                ", parameters=" + Arrays.toString(parameters) +
+                ", result=" + Arrays.toString(result) +
                 '}';
     }
 
@@ -60,18 +60,18 @@ public class Request extends NettyMessage.Body {
         int writeLength = 0;
 
         writeLength += NettyMessage.writeParam(byteBuf, ipPort, WriteAndReadType.BYTE);
-        writeLength += NettyMessage.writeParam(byteBuf, parameters, WriteAndReadType.NULL);
+        writeLength += NettyMessage.writeParam(byteBuf, result, WriteAndReadType.NULL);
 
         return writeLength;
     }
 
     public static NettyMessage.Body read(ByteBuf byteBuf) {
         byte[] ipPort = NettyMessage.readParam(byteBuf, WriteAndReadType.BYTE);
-        byte[] parameters = NettyMessage.readParam(byteBuf, WriteAndReadType.NULL);
+        byte[] result = NettyMessage.readParam(byteBuf, WriteAndReadType.NULL);
 
-        return Request.builder()
+        return Response.builder()
                 .ipPort(ipPort)
-                .parameters(parameters)
+                .result(result)
                 .build();
     }
 
@@ -88,20 +88,20 @@ public class Request extends NettyMessage.Body {
         /**
          * 请求入参
          **/
-        byte [] parameters;
+        byte [] result;
 
         RequestBuilder ipPort(byte[] ipPort) {
             this.ipPort = ipPort;
             return this;
         }
 
-        RequestBuilder parameters(byte[] parameters) {
-            this.parameters = parameters;
+        RequestBuilder result(byte[] result) {
+            this.result = result;
             return this;
         }
 
-        Request build() {
-            return new Request(ipPort, parameters);
+        Response build() {
+            return new Response(ipPort, result);
         }
     }
 }
